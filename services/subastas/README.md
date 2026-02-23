@@ -1,0 +1,1 @@
+This folder contains the Java Spring Boot microservice dedicated to handling all auction logic and operations within the BidStream platform.

@@ -1,0 +1,1 @@
+This folder contains the Keycloak container setup, providing robust authentication and authorization services for the entire BidStream platform.

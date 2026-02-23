@@ -1,0 +1,1 @@
+This folder contains the MySQL 8.4.8 relational database configuration, dedicated to storing payment and user registration data for the BidStream platform.

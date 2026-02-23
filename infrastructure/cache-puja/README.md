@@ -1,0 +1,1 @@
+This folder contains the Memcached container configuration, used for high-speed caching of bid data to improve the performance of the BidStream platform.

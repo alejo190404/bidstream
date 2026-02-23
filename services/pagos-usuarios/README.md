@@ -1,0 +1,1 @@
+This folder contains the Java Spring Boot modular monolith responsible for managing payments and user registration for the BidStream platform.

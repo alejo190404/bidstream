@@ -1,0 +1,1 @@
+This folder contains the Kafka queue setup, facilitating asynchronous messaging and event streaming between various services within the BidStream platform.

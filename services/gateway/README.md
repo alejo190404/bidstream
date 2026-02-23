@@ -1,0 +1,1 @@
+This folder contains the Java Spring Boot API gateway, responsible for routing requests, authentication, and load balancing for the BidStream services.

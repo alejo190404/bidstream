@@ -1,0 +1,1 @@
+This folder contains all the microservices and applications that make up the BidStream platform's business logic and user-facing components.

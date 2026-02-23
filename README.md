@@ -1,0 +1,1 @@
+This monorepo contains the entire BidStream auction platform, organized into services and infrastructure components to facilitate development and deployment.

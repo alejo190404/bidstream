@@ -1,0 +1,1 @@
+This folder contains the MongoDB database setup, specifically designed to store and manage all auction-related data for the BidStream platform.

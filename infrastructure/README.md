@@ -1,0 +1,1 @@
+This folder contains all the infrastructure components and configurations necessary to support the BidStream platform's services.
