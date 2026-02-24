@@ -1,0 +1,45 @@
+{
+  "realm": "bidstream",
+  "enabled": true,
+  "displayName": "BidStream",
+  "roles": {
+    "realm": [
+      { "name": "postor", "description": "Usuario postor (bidder)" },
+      { "name": "subastador", "description": "Usuario subastador (auctioneer)" },
+      { "name": "asistente", "description": "Usuario asistente (viewer)" },
+      { "name": "verificador", "description": "Usuario verificador" },
+      { "name": "admin", "description": "Administrador de la app" }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "bidstream-frontend",
+      "name": "BidStream Angular",
+      "enabled": true,
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "rootUrl": "http://localhost:4200",
+      "baseUrl": "/",
+      "redirectUris": ["http://localhost:4200/*", "http://localhost:4200"],
+      "webOrigins": ["http://localhost:4200", "http://localhost:8080"],
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["openid", "profile", "email"],
+      "optionalClientScopes": ["roles"]
+    },
+    {
+      "clientId": "bidstream-gateway",
+      "name": "BidStream Gateway",
+      "enabled": true,
+      "publicClient": false,
+      "directAccessGrantsEnabled": false,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["openid"]
+    }
+  ],
+  "defaultDefaultClientScopes": ["role_list", "profile", "email", "roles", "web-origins"],
+  "users": []
+}
