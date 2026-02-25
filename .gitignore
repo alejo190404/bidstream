@@ -1,0 +1,59 @@
+*.sh
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json.bak
+*.http
+target/
+
+# ================================
+# Angular build output
+# ================================
+/dist
+/tmp
+/out-tsc
+/build
+
+# ================================
+# Environment files (if storing secrets)
+# Keep environment.ts but ignore local overrides
+# ================================
+src/environments/environment.prod.ts
+src/environments/environment.local.ts
+
+# ================================
+# IDE / Editors
+# ================================
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# ================================
+# OS files
+# ================================
+.DS_Store
+Thumbs.db
+
+# ================================
+# Logs
+# ================================
+*.log
+
+# ================================
+# Coverage reports
+# ================================
+/coverage
+
+# ================================
+# Docker (optional, if generated files exist)
+# ================================
+docker-compose.override.yml
+
+# ================================
+# Angular cache
+# ================================
+.angular/cache
