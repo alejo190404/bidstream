@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: gateway
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:http://localhost:8180/realms/bidstream}
+
+server:
+  port: 8080
+
+gateway:
+  subastas-url: ${SUBASTAS_URL:http://localhost:8081}
+  pagos-usuarios-url: ${PAGOS_USUARIOS_URL:http://localhost:8082}
