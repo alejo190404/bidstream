@@ -1,5 +1,6 @@
 package com.bidstream.gateway.web;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -118,8 +119,11 @@ public class GatewayController {
     public ResponseEntity<?> placeBid(@PathVariable String id,
                                        @RequestBody Map<String, Object> body,
                                        @AuthenticationPrincipal Jwt jwt) {
-        //Return a string that says "/auctions works fine" and a 200 OK. TODO: Implement correct return and test publishing to kafka
-        return ResponseEntity.ok("/auctions works fine");
+                                       
+        int value = 50000; //Placeholder for amount. TODO: Implement logic for getting amount
+        BigDecimal amount = BigDecimal.valueOf(value); 
+        kafkaProducer.sendBidCreate(id, "1", amount); //Placeholder for bidder ID. TODO: Implement logic for getting bidderId from JWT
+        return ResponseEntity.ok("Bid created"); //TODO: Evaluate if this is enough as an response
     }
 
     // --- Pagos-Usuarios proxy ---
