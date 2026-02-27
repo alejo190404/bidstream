@@ -1,0 +1,34 @@
+# Subastas service – default config (override via env in Docker)
+spring:
+  application:
+    name: subastas
+  kafka:
+    bootstrap-servers: ${SPRING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: subastas-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.bidstream.subastas
+  data:
+    mongodb:
+      uri: ${SPRING_DATA_MONGODB_URI:mongodb://localhost:27017/subastas}
+      database: subastas
+
+server:
+  port: 8081
+
+# Custom (override in Docker)
+memcached:
+  host: ${MEMCACHED_HOST:localhost}
+  port: ${MEMCACHED_PORT:11211}
+
+pagos-usuarios:
+  url: ${PAGOS_USUARIOS_URL:http://localhost:8082}
+
+jitsi:
+  meet-url: https://meet.jit.si
+  # Optional: Jitsi as a Service (JaaS) – if set, backend can create meetings via API
+  app-id: ${JITSI_APP_ID:}
+  app-secret: ${JITSI_APP_SECRET:}
