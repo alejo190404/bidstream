@@ -41,5 +41,25 @@
     }
   ],
   "defaultDefaultClientScopes": ["role_list", "profile", "email", "roles", "web-origins"],
-  "users": []
+  "users": [
+    {
+      "username": "testuser",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "Test",
+      "lastName": "User",
+      "email": "testuser@example.com",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "password",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "admin",
+        "postor"
+      ]
+    }
+  ]
 }
