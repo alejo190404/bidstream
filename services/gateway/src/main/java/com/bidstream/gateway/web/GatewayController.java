@@ -21,14 +21,17 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.bidstream.gateway.domain.StartAuctionRequest;
 import com.bidstream.gateway.service.SubastaKafkaProducer;
+import com.bidstream.gateway.service.SubastaService;
 
-@RestController
 @RequestMapping("/api")
+@RestController
 public class GatewayController {
 
     private final RestTemplate restTemplate = new RestTemplate();
     private final SubastaKafkaProducer kafkaProducer;
+    private final SubastaService subastaService;
 
     @Value("${gateway.subastas-url:http://localhost:8081}")
     private String subastasUrl;
@@ -36,8 +39,9 @@ public class GatewayController {
     @Value("${gateway.pagos-usuarios-url:http://localhost:8082}")
     private String pagosUsuariosUrl;
 
-    public GatewayController(SubastaKafkaProducer kafkaProducer) {
+    public GatewayController(SubastaKafkaProducer kafkaProducer, SubastaService subastaService) {
         this.kafkaProducer = kafkaProducer;
+        this.subastaService = subastaService;
     }
 
     //Funciones para actuar como Proxy. TODO: Definir si vale la pena el comportamiento
@@ -96,16 +100,16 @@ public class GatewayController {
         return ResponseEntity.ok("/auctions works fine");
     }
 
-    @PostMapping("/auctions")
+    @PostMapping("/auctions/create-auction")
     public ResponseEntity<?> createAuction(@RequestBody Map<String, Object> body, @RequestHeader(value = "Authorization", required = false) String auth) {
         //Return a string that says "/auctions works fine" and a 200 OK. TODO: Implement correct return and test publishing to kafka
         return ResponseEntity.ok("/auctions works fine");
     }
 
-    @PostMapping("/auctions/{id}/start-streaming")
-    public ResponseEntity<?> startStreaming(@PathVariable String id, @RequestHeader(value = "Authorization", required = false) String auth) {
-        //Return a string that says "/auctions works fine" and a 200 OK. TODO: Implement correct return and test publishing to kafka
-        return ResponseEntity.ok("/auctions works fine");
+    @PostMapping("/auctions/start-auction")
+    public ResponseEntity<?> startStreaming(@RequestBody StartAuctionRequest request, @RequestHeader(value = "Authorization", required = false) String auth) {
+        String streamingUrl = subastaService.startAuction(request, subastasUrl);
+        return ResponseEntity.status(200).body(streamingUrl);
     }
 
     @PostMapping("/auctions/{id}/end")
@@ -119,10 +123,11 @@ public class GatewayController {
     public ResponseEntity<?> placeBid(@PathVariable String id,
                                        @RequestBody Map<String, Object> body,
                                        @AuthenticationPrincipal Jwt jwt) {
-                                       
-        int value = 50000; //Placeholder for amount. TODO: Implement logic for getting amount
-        BigDecimal amount = BigDecimal.valueOf(value); 
-        kafkaProducer.sendBidCreate(id, "1", amount); //Placeholder for bidder ID. TODO: Implement logic for getting bidderId from JWT
+                       
+        BigDecimal amount = new BigDecimal(body.get("amount").toString());
+        kafkaProducer.sendBidCreate(body.get("auctionId").toString(), 
+                                    body.get("bidderId").toString(), //Placeholder for bidder ID. TODO: Implement logic for getting bidderId from JWT
+                                    amount); 
         return ResponseEntity.ok("Bid created"); //TODO: Evaluate if this is enough as an response
     }
 

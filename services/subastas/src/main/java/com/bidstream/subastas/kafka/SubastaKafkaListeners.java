@@ -37,7 +37,7 @@ public class SubastaKafkaListeners {
             // 1. Manually convert the HashMap into your DTO
             BidCreateEvent event = objectMapper.convertValue(message, BidCreateEvent.class);
 
-            log.info("Received at listener bid.create: auctionId={}, bidderId={}, amount={}", event.getAuctionId(), event.getBidderId(), event.getAmount());
+            // log.info("Received at listener bid.create: auctionId={}, bidderId={}, amount={}", event.getAuctionId(), event.getBidderId(), event.getAmount());
 
             // 2. Publish the internal event
             eventPublisher.publishEvent(event); 
