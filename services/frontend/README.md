@@ -1,1 +1,0 @@
-This folder contains the Angular web application, which serves as the user interface for the BidStream auction platform.

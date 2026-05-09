@@ -1,0 +1,35 @@
+@use 'styles/tokens';
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg1);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+input, select, textarea, button {
+  font-family: inherit;
+}
+
+select option {
+  background: var(--surface-raised);
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+a {
+  color: var(--blue-light);
+  text-decoration: none;
+  &:hover { text-decoration: underline; }
+}
