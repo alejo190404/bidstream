@@ -2,6 +2,21 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 echo "========================================="
+echo "   Fixing SSL & System Environment       "
+echo "========================================="
+# Ensure time is correct (SSL will fail if clock is wrong)
+sudo timedatectl set-ntp true
+
+# Fix permissions and clear previous failed attempts
+sudo chown -R $USER:$USER "$HOME"
+rm -rf "$HOME/.nvm" "$HOME/.sdkman"
+
+echo "Updating package index and repairing certificates..."
+sudo apt-get update
+sudo apt-get install -y ca-certificates wget curl git zip unzip build-essential
+sudo update-ca-certificates
+
+echo "========================================="
 echo "        Starting Docker Installation       "
 echo "========================================="
 echo "Updating package index..."
@@ -64,9 +79,33 @@ else
   echo "SDKMAN entry already present in .bashrc, skipping..."
 fi
 
-echo "Verifying Java and Maven installations..."
-java -version
-mvn -version
+echo "========================================="
+echo "   Starting Node.js & Angular Setup      "
+echo "========================================="
+echo "Downloading NVM install script..."
+wget --no-check-certificate https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh -O nvm_install.sh
+bash nvm_install.sh
+rm nvm_install.sh
+
+# Load NVM for this session
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
+echo "Installing Node.js LTS and Angular CLI..."
+nvm install --lts
+npm install -g @angular/cli
+
+echo "========================================="
+echo "         Final Verification              "
+echo "========================================="
+echo "Node: $(node -v)"
+echo "NPM:  $(npm -version)"
+echo "Java: $(java -version 2>&1 | head -n 1)"
+echo "NG:   $(ng version | grep 'Angular CLI' | head -n 1)"
+echo "========================================="
+echo "Setup complete! Close this terminal and open a new one."
+echo "========================================="
+
 echo "========================================="
 echo "        All Installations Complete!        "
 echo "========================================="
