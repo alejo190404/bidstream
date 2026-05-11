@@ -8,7 +8,8 @@ echo "========================================="
 sudo timedatectl set-ntp true
 
 # Fix permissions and clear previous failed attempts
-sudo chown -R $USER:$USER "$HOME"
+echo "Repairing home directory permissions..."
+sudo chown -R $USER:$USER $HOME 2>/dev/null || true
 rm -rf "$HOME/.nvm" "$HOME/.sdkman"
 
 echo "Updating package index and repairing certificates..."
@@ -82,18 +83,54 @@ fi
 echo "========================================="
 echo "   Starting Node.js & Angular Setup      "
 echo "========================================="
-echo "Downloading NVM install script..."
-wget --no-check-certificate https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh -O nvm_install.sh
-bash nvm_install.sh
-rm nvm_install.sh
+echo "Installing prerequisites..."
+sudo apt-get update
+sudo apt-get install --reinstall ca-certificates -y
+sudo apt-get install -y curl git
+sudo update-ca-certificates
 
-# Load NVM for this session
 export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+NVM_VERSION="v0.40.1"
 
+echo "Cloning NVM repository (version $NVM_VERSION)..."
+if [ -d "$NVM_DIR" ]; then
+    echo "  $NVM_DIR already exists — removing for a clean install."
+    rm -rf "$NVM_DIR"
+fi
+
+if ! git clone --depth 1 -b "$NVM_VERSION" https://github.com/nvm-sh/nvm.git "$NVM_DIR"; then
+    echo "ERROR: Failed to clone NVM repository."
+    echo "Check your network connection to github.com:"
+    echo "  curl -v https://github.com 2>&1 | head -20"
+    exit 1
+fi
+
+echo "Running NVM install script..."
+(cd "$NVM_DIR" && bash install.sh)
+
+echo "Loading NVM into current shell..."
+if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    echo "ERROR: nvm.sh not found at $NVM_DIR/nvm.sh after install."
+    ls -la "$NVM_DIR" 2>/dev/null
+    exit 1
+fi
+\. "$NVM_DIR/nvm.sh"
+
+if ! command -v nvm >/dev/null 2>&1; then
+    echo "ERROR: nvm.sh was sourced but 'nvm' command is still not available"
+    exit 1
+fi
+
+echo "NVM loaded: $(nvm --version)"
 echo "Installing Node.js LTS and Angular CLI..."
 nvm install --lts
+nvm use --lts
 npm install -g @angular/cli
+
+echo "Verifying installation..."
+echo "  Node: $(node --version)"
+echo "  npm:  $(npm --version)"
+echo "  ng:   $(ng version --skip-confirmation 2>/dev/null | grep -E '^Angular CLI' || echo 'Angular CLI installed')"
 
 echo "========================================="
 echo "         Final Verification              "
