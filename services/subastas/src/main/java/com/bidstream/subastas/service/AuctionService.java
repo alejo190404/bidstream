@@ -1,6 +1,7 @@
 package com.bidstream.subastas.service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.bidstream.subastas.domain.Auction;
+import com.bidstream.subastas.domain.AuctionResponse;
 import com.bidstream.subastas.domain.BidRecord;
 import com.bidstream.subastas.domain.CreateAuctionRequest;
 import com.bidstream.subastas.kafka.dto.PersistBidEvent;
@@ -31,6 +33,10 @@ public class AuctionService {
             PujaCacheService pujaCacheService) {
         this.auctionRepository = auctionRepository;
         this.pujaCacheService = pujaCacheService;
+    }
+
+    public List<AuctionResponse> getAllAuctions() {
+        return auctionRepository.findAll().stream().map(AuctionResponse::from).toList();
     }
 
     public Auction createAuction(CreateAuctionRequest request) {

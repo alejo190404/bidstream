@@ -1,13 +1,17 @@
 package com.bidstream.subastas.web;
 
+import java.util.List;
+
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bidstream.subastas.domain.AuctionResponse;
 import com.bidstream.subastas.domain.CreateAuctionRequest;
 import com.bidstream.subastas.domain.StartAuctionRequest;
 import com.bidstream.subastas.service.AuctionService;
@@ -26,6 +30,11 @@ public class AuctionController {
         this.jitsiService = jitsiService;
     }
 
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<AuctionResponse>> getAllAuctions() {
+        return ResponseEntity.ok(auctionService.getAllAuctions());
+    }
+
     @PostMapping(path = "/start", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public String startAuction(@RequestBody StartAuctionRequest request) {
         auctionService.startAuction(request.getAuctionId());
@@ -36,8 +45,7 @@ public class AuctionController {
     }
 
     @PostMapping(path = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> createSubasta(@RequestBody CreateAuctionRequest request) {
-        auctionService.createAuction(request);
-        return ResponseEntity.status(200).body("");
+    public ResponseEntity<AuctionResponse> createSubasta(@RequestBody CreateAuctionRequest request) {
+        return ResponseEntity.status(201).body(AuctionResponse.from(auctionService.createAuction(request)));
     }
 }

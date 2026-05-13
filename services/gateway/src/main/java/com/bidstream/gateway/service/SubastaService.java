@@ -1,5 +1,7 @@
 package com.bidstream.gateway.service;
 
+import java.util.Map;
+
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -18,8 +20,20 @@ public class SubastaService {
         this.restTemplate = restTemplate;
     }
 
-    public String createAuction() {
-        return "Todo melo caramelo";
+    public ResponseEntity<Object> getAuctions(String subastasUrl) {
+        HttpEntity<Void> entity = new HttpEntity<>(new HttpHeaders());
+        ResponseEntity<Object> response = restTemplate.exchange(
+                subastasUrl + "/api/auctions", HttpMethod.GET, entity, Object.class);
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+    }
+
+    public ResponseEntity<Object> createAuction(Map<String, Object> body, String subastasUrl) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<Map<String, Object>> entity = new HttpEntity<>(body, headers);
+        ResponseEntity<Object> response = restTemplate.exchange(
+                subastasUrl + "/api/auctions/create", HttpMethod.POST, entity, Object.class);
+        return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
     }
 
     public String startAuction(StartAuctionRequest request, String subastasUrl) {

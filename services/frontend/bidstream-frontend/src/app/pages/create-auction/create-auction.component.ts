@@ -240,7 +240,7 @@ export class CreateAuctionComponent {
       enableStream: f.enableStream,
       startTime,
       endTime,
-      auctioneerId: 'current_user', // TODO: get from AuthService.currentUser().id
+      auctioneerId: 'anonymous', // TODO: get from AuthService.currentUser().id
     });
 
     this.router.navigate(['/']);

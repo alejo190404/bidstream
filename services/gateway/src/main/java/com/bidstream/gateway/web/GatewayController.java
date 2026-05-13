@@ -77,9 +77,7 @@ public class GatewayController {
 
     @GetMapping("/auctions")
     public ResponseEntity<?> listAuctions(@RequestHeader(value = "Authorization", required = false) String auth) {
-        //Return a string that says "/auctions works fine" and a 200 OK. TODO: Implement correct return
-        return ResponseEntity.ok("/auctions works fine");
-        
+        return subastaService.getAuctions(subastasUrl);
     }
 
     @GetMapping("/auctions/{id}")
@@ -102,8 +100,7 @@ public class GatewayController {
 
     @PostMapping("/auctions/create-auction")
     public ResponseEntity<?> createAuction(@RequestBody Map<String, Object> body, @RequestHeader(value = "Authorization", required = false) String auth) {
-        //Return a string that says "/auctions works fine" and a 200 OK. TODO: Implement correct return and test publishing to kafka
-        return ResponseEntity.ok("/auctions works fine");
+        return subastaService.createAuction(body, subastasUrl);
     }
 
     @PostMapping("/auctions/start-auction")
