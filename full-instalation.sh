@@ -2,6 +2,22 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 echo "========================================="
+echo "   Fixing SSL & System Environment       "
+echo "========================================="
+# Ensure time is correct (SSL will fail if clock is wrong)
+sudo timedatectl set-ntp true
+
+# Fix permissions and clear previous failed attempts
+echo "Repairing home directory permissions..."
+sudo chown -R $USER:$USER $HOME 2>/dev/null || true
+rm -rf "$HOME/.nvm" "$HOME/.sdkman"
+
+echo "Updating package index and repairing certificates..."
+sudo apt-get update
+sudo apt-get install -y ca-certificates wget curl git zip unzip build-essential
+sudo update-ca-certificates
+
+echo "========================================="
 echo "        Starting Docker Installation       "
 echo "========================================="
 echo "Updating package index..."
@@ -64,9 +80,69 @@ else
   echo "SDKMAN entry already present in .bashrc, skipping..."
 fi
 
-echo "Verifying Java and Maven installations..."
-java -version
-mvn -version
+echo "========================================="
+echo "   Starting Node.js & Angular Setup      "
+echo "========================================="
+echo "Installing prerequisites..."
+sudo apt-get update
+sudo apt-get install --reinstall ca-certificates -y
+sudo apt-get install -y curl git
+sudo update-ca-certificates
+
+export NVM_DIR="$HOME/.nvm"
+NVM_VERSION="v0.40.1"
+
+echo "Cloning NVM repository (version $NVM_VERSION)..."
+if [ -d "$NVM_DIR" ]; then
+    echo "  $NVM_DIR already exists — removing for a clean install."
+    rm -rf "$NVM_DIR"
+fi
+
+if ! git clone --depth 1 -b "$NVM_VERSION" https://github.com/nvm-sh/nvm.git "$NVM_DIR"; then
+    echo "ERROR: Failed to clone NVM repository."
+    echo "Check your network connection to github.com:"
+    echo "  curl -v https://github.com 2>&1 | head -20"
+    exit 1
+fi
+
+echo "Running NVM install script..."
+(cd "$NVM_DIR" && bash install.sh)
+
+echo "Loading NVM into current shell..."
+if [ ! -s "$NVM_DIR/nvm.sh" ]; then
+    echo "ERROR: nvm.sh not found at $NVM_DIR/nvm.sh after install."
+    ls -la "$NVM_DIR" 2>/dev/null
+    exit 1
+fi
+\. "$NVM_DIR/nvm.sh"
+
+if ! command -v nvm >/dev/null 2>&1; then
+    echo "ERROR: nvm.sh was sourced but 'nvm' command is still not available"
+    exit 1
+fi
+
+echo "NVM loaded: $(nvm --version)"
+echo "Installing Node.js LTS and Angular CLI..."
+nvm install --lts
+nvm use --lts
+npm install -g @angular/cli
+
+echo "Verifying installation..."
+echo "  Node: $(node --version)"
+echo "  npm:  $(npm --version)"
+echo "  ng:   $(ng version --skip-confirmation 2>/dev/null | grep -E '^Angular CLI' || echo 'Angular CLI installed')"
+
+echo "========================================="
+echo "         Final Verification              "
+echo "========================================="
+echo "Node: $(node -v)"
+echo "NPM:  $(npm -version)"
+echo "Java: $(java -version 2>&1 | head -n 1)"
+echo "NG:   $(ng version | grep 'Angular CLI' | head -n 1)"
+echo "========================================="
+echo "Setup complete! Close this terminal and open a new one."
+echo "========================================="
+
 echo "========================================="
 echo "        All Installations Complete!        "
 echo "========================================="
